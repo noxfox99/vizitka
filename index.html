@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Links Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        form {
+            margin: 20px;
+        }
+        label, input, select, textarea {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        input[type="text"], textarea {
+            padding: 5px;
+            font-size: 1em;
+        }
+        button {
+            padding: 10px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Edit Links</h1>
+
+    <!-- File input to upload the links.txt file -->
+    <input type="file" id="fileInput" accept=".txt" onchange="handleFileUpload(event)">
+    <hr>
+
+    <form id="linksForm">
+        <!-- Links will be dynamically generated here -->
+    </form>
+
+    <button onclick="saveChanges()">Save Changes</button>
+    <button type="button" onclick="resetForm()">Reset</button>
+    <button type="button" onclick="addNewLink()">Add New Link</button>
+    <button type="button" onclick="downloadFile()">Download links.txt</button>
+
+    <script>
+        let linksData = [];
+
+        // Function to handle the file upload
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const fileContent = e.target.result;
+                    parseLinksFile(fileContent);
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // Function to parse the content of links.txt
+        function parseLinksFile(content) {
+            // Clear previous data
+            linksData = [];
+
+            // Split the content by new lines and extract id (left/right), class, and URL information
+            const lines = content.split('\n');
+            lines.forEach(line => {
+                const match = line.match(/<div id="(left|right)" class="([^"]+)">([^<]+)<\/div>/);
+                if (match) {
+                    linksData.push({ side: match[1], class: match[2], url: match[3] });
+                }
+            });
+
+            // Load the form with the parsed data
+            loadForm();
+        }
+
+        // Function to generate the form fields dynamically
+        function loadForm() {
+            const form = document.getElementById('linksForm');
+            form.innerHTML = ''; // Clear the form first
+            linksData.forEach((link, index) => {
+                form.innerHTML += `
+                    <label for="side_${index}">Side (${index + 1}):</label>
+                    <select id="side_${index}">
+                        <option value="left" ${link.side === 'left' ? 'selected' : ''}>Left</option>
+                        <option value="right" ${link.side === 'right' ? 'selected' : ''}>Right</option>
+                    </select>
+                    <label for="class_${index}">Class (${index + 1}):</label>
+                    <input type="text" id="class_${index}" value="${link.class}">
+                    <label for="url_${index}">URL (${index + 1}):</label>
+                    <input type="text" id="url_${index}" value="${link.url}">
+                    <hr>
+                `;
+            });
+        }
+
+        // Function to save changes made to the form
+        function saveChanges() {
+            linksData.forEach((link, index) => {
+                const sideInput = document.getElementById(`side_${index}`).value;
+                const classInput = document.getElementById(`class_${index}`).value;
+                const urlInput = document.getElementById(`url_${index}`).value;
+                link.side = sideInput;
+                link.class = classInput;
+                link.url = urlInput;
+            });
+            alert("Changes saved!");
+            console.log("Updated Data: ", linksData); // You can send this data to your backend or process it further
+        }
+
+        // Function to reset the form
+        function resetForm() {
+            loadForm(); // Reload the original form data
+        }
+
+        // Function to add a new link
+        function addNewLink() {
+            const newLink = { side: "left", class: "", url: "" };
+            linksData.push(newLink);
+            loadForm();
+        }
+
+        // Function to download the edited links as a text file
+        function downloadFile() {
+            // Create the content for the links.txt file
+            let fileContent = '';
+            linksData.forEach(link => {
+                fileContent += `<div id="${link.side}" class="${link.class}">${link.url}</div>\n`;
+            });
+
+            // Create a blob object
+            const blob = new Blob([fileContent], { type: 'text/plain' });
+
+            // Create a download link and trigger download
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'links.txt';
+            a.click();
+
+            // Clean up after download
+            URL.revokeObjectURL(a.href);
+        }
+    </script>
+
+</body>
+</html>
