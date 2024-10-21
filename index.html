@@ -5,34 +5,161 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Links Form</title>
     <style>
-        /* Your existing CSS styles */
-        /* Styles remain the same as in the previous versions */
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            color: #555;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 14px 20px;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px 5px;
+            display: inline-block;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Style the buttons in a flex layout for responsiveness */
+        .button-group {
+            text-align: center;
+        }
+
+        .button-group button {
+            margin: 10px;
+            width: 180px;
+        }
+
+        /* Add hover effects and visual feedback */
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Add a custom scrollbar for a better user experience */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive design adjustments for mobile */
+        @media (max-width: 600px) {
+            form {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            button {
+                padding: 12px;
+                font-size: 0.9rem;
+            }
+
+            input[type="text"], select {
+                font-size: 0.9rem;
+            }
+
+            .button-group button {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
     </style>
 </head>
 <body>
 
     <h1>Edit Links</h1>
 
-    <!-- Button to load the links from the same directory -->
+    <!-- Button to load links from links.txt -->
     <div class="button-group">
         <button type="button" onclick="fetchLinks()">Load Links from links.txt</button>
     </div>
     <hr>
 
     <form id="linksForm">
-        <!-- Links will be dynamically generated here -->
+        <!-- Dynamically generated form fields will be added here -->
     </form>
 
     <div class="button-group">
-        <button onclick="saveChanges()">Save Changes</button>
-        <button type="button" onclick="resetForm()">Reset</button>
+        <button type="button" onclick="saveChanges()">Save Changes</button>
         <button type="button" onclick="addNewLink()">Add New Link</button>
     </div>
 
     <script>
         let linksData = [];
 
-        // Function to fetch links from the same directory as the index.html
+        // Function to fetch links from links.txt
         async function fetchLinks() {
             try {
                 const response = await fetch('links.txt'); // Fetching the file from the same directory
@@ -48,7 +175,7 @@
 
         // Function to parse the content of links.txt
         function parseLinksFile(content) {
-            linksData = [];
+            linksData = []; // Clear previous data
 
             const lines = content.split('\n');
             lines.forEach(line => {
@@ -61,10 +188,11 @@
             loadForm();
         }
 
-        // Function to generate the form fields dynamically
+        // Function to dynamically load the form fields with parsed links data
         function loadForm() {
             const form = document.getElementById('linksForm');
-            form.innerHTML = '';
+            form.innerHTML = ''; // Clear the form
+
             linksData.forEach((link, index) => {
                 form.innerHTML += `
                     <label for="side_${index}">Side (${index + 1}):</label>
@@ -81,8 +209,9 @@
             });
         }
 
-        // Function to save changes made to the form and send the updated data to the server
+        // Function to save the changes and send the updated data to PHP server
         async function saveChanges() {
+            // Update linksData array based on user input
             linksData.forEach((link, index) => {
                 const sideInput = document.getElementById(`side_${index}`).value;
                 const classInput = document.getElementById(`class_${index}`).value;
@@ -92,14 +221,14 @@
                 link.url = urlInput;
             });
 
-            // Send the updated data to the server
+            // Send updated data to the PHP server
             try {
                 const response = await fetch('update-links.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ links: linksData }),
+                    body: JSON.stringify({ links: linksData }), // Send as JSON
                 });
 
                 if (!response.ok) {
@@ -112,13 +241,12 @@
             }
         }
 
-        // Function to add a new link
+        // Function to add a new link entry
         function addNewLink() {
             const newLink = { side: "left", class: "", url: "" };
-            linksData.push(newLink);
-            loadForm();
+            linksData.push(newLink); // Add new blank entry
+            loadForm(); // Reload the form
         }
-
     </script>
 
 </body>
