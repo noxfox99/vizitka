@@ -179,7 +179,7 @@
             form.innerHTML = ''; // Clear the form first
             linksData.forEach((link, index) => {
                 form.innerHTML += `
-                    <label for="side_${index}">Side (${index + 1}):</label>
+                    <label for="side_${index}">Блок (сторона) (${index + 1}):</label>
                     <select id="side_${index}">
                         <option value="left" ${link.side === 'left' ? 'selected' : ''}>Left</option>
                         <option value="right" ${link.side === 'right' ? 'selected' : ''}>Right</option>
