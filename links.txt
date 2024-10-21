@@ -1,0 +1,12 @@
+<div id="left" class="Оператор Кавказ">https://t.me/+88801795264</div>
+<div id="left" class="Бот Кавказ">https://t.me/SANTAMUR_KBR_BOT</div>
+<div id="left" class="Канал Кавказ">"https://t.me/+meOnBmuAMsg3MjUx</div>
+<div id="left" class="Оператор центр">https://t.me/STMsupp</div>
+<div id="left" class="Бот центр">https://t.me/MRT_Kras_kray_bot</div>
+<div id="left" class="Чат центр/Юг">https://t.me/+ggE9_-uc-Og3ZTlk</div>
+<div id="left" class="Канал цент/Юг">https://t.me/+zZAgnlFdLJJiYmRk</div>
+<div id="left" class="Работа с нами">https://t.me/+zZAgnlFdLJJiYmRk</div>
+<div id="right" class="https://stm24.crypto">STM24.crypto</div>
+<div id="right" class="https://t.me/santamuerta_bot/santamuerta">Telegram App</div>
+<div id="right" class="https://stm24.biz">https://STM24.biz</div>
+<div id="right" class="https://stm24.ton">STM24.ton</div>
