@@ -81,23 +81,6 @@
             cursor: not-allowed;
         }
 
-        /* Styling the file input */
-        #fileInput {
-            display: block;
-            margin: 0 auto 20px;
-            font-size: 1rem;
-            padding: 10px;
-            background-color: #fff;
-            border: 2px dashed #ccc;
-            text-align: center;
-            border-radius: 5px;
-            max-width: 600px;
-        }
-
-        #fileInput:hover {
-            border-color: #007bff;
-        }
-
         /* Align buttons in a row */
         .button-group {
             text-align: center;
@@ -122,10 +105,12 @@
 </head>
 <body>
 
-    <h1>Редактировать ссылки</h1>
+    <h1>Edit Links</h1>
 
-    <!-- File input to upload the links.txt file -->
-    <input type="file" id="fileInput" accept=".txt" onchange="handleFileUpload(event)">
+    <!-- Button to load the links from the URL -->
+    <div class="button-group">
+        <button type="button" onclick="fetchLinks()">Load Links from URL</button>
+    </div>
     <hr>
 
     <form id="linksForm">
@@ -133,25 +118,26 @@
     </form>
 
     <div class="button-group">
-        <button onclick="saveChanges()">Сохранить изменения</button>
-        <button type="button" onclick="resetForm()">Сбросить</button>
-        <button type="button" onclick="addNewLink()">Добавить ссылку</button>
-        <button type="button" onclick="downloadFile()">Скачать файл</button>
+        <button onclick="saveChanges()">Save Changes</button>
+        <button type="button" onclick="resetForm()">Reset</button>
+        <button type="button" onclick="addNewLink()">Add New Link</button>
+        <button type="button" onclick="downloadFile()">Download links.txt</button>
     </div>
 
     <script>
         let linksData = [];
 
-        // Function to handle the file upload
-        function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const fileContent = e.target.result;
-                    parseLinksFile(fileContent);
-                };
-                reader.readAsText(file);
+        // Function to fetch links from the URL
+        async function fetchLinks() {
+            try {
+                const response = await fetch('https://findwork.biz/links.txt');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const content = await response.text();
+                parseLinksFile(content);
+            } catch (error) {
+                alert('Failed to fetch links: ' + error.message);
             }
         }
 
@@ -179,14 +165,14 @@
             form.innerHTML = ''; // Clear the form first
             linksData.forEach((link, index) => {
                 form.innerHTML += `
-                    <label for="side_${index}">Блок (сторона) (${index + 1}):</label>
+                    <label for="side_${index}">Side (${index + 1}):</label>
                     <select id="side_${index}">
                         <option value="left" ${link.side === 'left' ? 'selected' : ''}>Left</option>
                         <option value="right" ${link.side === 'right' ? 'selected' : ''}>Right</option>
                     </select>
-                    <label for="class_${index}">Название (${index + 1}):</label>
+                    <label for="class_${index}">Class (${index + 1}):</label>
                     <input type="text" id="class_${index}" value="${link.class}">
-                    <label for="url_${index}">(ссылка)  (${index + 1}):</label>
+                    <label for="url_${index}">URL (${index + 1}):</label>
                     <input type="text" id="url_${index}" value="${link.url}">
                     <hr>
                 `;
