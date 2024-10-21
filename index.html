@@ -5,31 +5,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Links Form</title>
     <style>
+        /* Reset some default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
         }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
         form {
-            margin: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
         }
-        label, input, select, textarea {
-            display: block;
-            margin-bottom: 10px;
+
+        label {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], select {
             width: 100%;
-        }
-        input[type="text"], textarea {
-            padding: 5px;
-            font-size: 1em;
-        }
-        button {
             padding: 10px;
-            font-size: 1em;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        select {
+            background-color: #f8f8f8;
+        }
+
+        hr {
+            border: none;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Styling the file input */
+        #fileInput {
+            display: block;
+            margin: 0 auto 20px;
+            font-size: 1rem;
+            padding: 10px;
+            background-color: #fff;
+            border: 2px dashed #ccc;
+            text-align: center;
+            border-radius: 5px;
+            max-width: 600px;
+        }
+
+        #fileInput:hover {
+            border-color: #007bff;
+        }
+
+        /* Align buttons in a row */
+        .button-group {
+            text-align: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            form {
+                padding: 10px;
+            }
+
+            button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            input[type="text"], select {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
 
-    <h1>Edit Links</h1>
+    <h1>Редактировать ссылки</h1>
 
     <!-- File input to upload the links.txt file -->
     <input type="file" id="fileInput" accept=".txt" onchange="handleFileUpload(event)">
@@ -39,10 +132,12 @@
         <!-- Links will be dynamically generated here -->
     </form>
 
-    <button onclick="saveChanges()">Save Changes</button>
-    <button type="button" onclick="resetForm()">Reset</button>
-    <button type="button" onclick="addNewLink()">Add New Link</button>
-    <button type="button" onclick="downloadFile()">Download links.txt</button>
+    <div class="button-group">
+        <button onclick="saveChanges()">Сохранить изменения</button>
+        <button type="button" onclick="resetForm()">Сбросить</button>
+        <button type="button" onclick="addNewLink()">Добавить ссылку</button>
+        <button type="button" onclick="downloadFile()">Скачать файл</button>
+    </div>
 
     <script>
         let linksData = [];
@@ -109,7 +204,6 @@
                 link.url = urlInput;
             });
             alert("Changes saved!");
-            console.log("Updated Data: ", linksData); // You can send this data to your backend or process it further
         }
 
         // Function to reset the form
